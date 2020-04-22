@@ -1,0 +1,122 @@
+      
+      
+   ------   Main window xaml ------------
+      
+    <Window.Resources>
+
+        <DataTemplate x:Key="lbx_CompurterGame">
+
+            <StackPanel Orientation="Horizontal" Margin="5">
+
+                <Image Source="{Binding GTAImage}" Width="75"/>
+
+                <StackPanel>
+                
+                    <TextBlock Text="{Binding Name}" Margin="5" FontSize="12"/>
+                </StackPanel>
+
+            </StackPanel>
+            
+    </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <ListBox x:Name="lbx_specification" HorizontalAlignment="Left" Height="284" Margin="59,63,0,0" VerticalAlignment="Top" Width="226"/>
+        <ListBox x:Name="lbx_CompurterGame" HorizontalAlignment="Left" Height="284" Margin="498,63,0,0" VerticalAlignment="Top" Width="226" ItemTemplate="{StaticResource lbx_CompurterGame}"/>
+
+    </Grid>
+</Window>
+
+
+
+-------- Program --------------------------
+
+
+namespace SpecificationManagemnet
+{
+    class Character
+    {
+        static void Main(string[] args)
+        {
+            SpecificationData db = new SpecificationData();
+
+
+            using (db)
+            {
+                Specification s1 = new Specification() { ID = 7, OS = "Windows", Location = "California" };
+                ComputerGame g1 = new ComputerGame() { ID = 1, Name = "Lego City", Type="Adventures", AgeID = 7, specification = s1, StudentImage = "GTAImage.png" };
+                ComputerGame g2 = new ComputerGame() { ID = 2, Name = "Spiderman", Type = "Adventures", AgeID = 7, specification = s1, StudentImage = "GTAImage.png" };
+
+
+                Specification s2 = new Specification() { ID = 18, OS = "Windows", Location = "California" };
+                ComputerGame g3 = new ComputerGame() { ID = 1, Name = "GTA", Type = "Adventures", AgeID = 18, specification = s2 ,StudentImage="GTAImage.png"};
+                ComputerGame g4 = new ComputerGame() { ID = 2, Name = "Cyberpunk", Type = "Adventures", AgeID = 18, specification = s2, StudentImage = "GTAImage.png" };
+
+                db.specifications.Add(s1);
+                db.specifications.Add(s2);
+
+                Console.WriteLine("Added specifications to database");
+
+                
+                db.Games.Add(g1);
+                db.Games.Add(g2);
+                db.Games.Add(g3);
+                db.Games.Add(g4);
+
+
+                Console.WriteLine("Added Games to database");
+
+                db.SaveChanges();
+
+                Console.WriteLine("Saved to database");
+
+
+
+            }
+        }
+    }
+    
+    
+    
+    
+    -------------------------Computer Game Class-------------------------
+    
+    
+     public class ComputerGame
+    {
+        public int ID { get; set; }
+        public string Type { get; set; }
+        public string Name { get; set; }
+        public string StudentImage { get; set; }
+
+
+        public int AgeID { get; set; }
+        public virtual Specification specification { get; set; }
+
+
+    }
+
+    public class Specification
+    {
+        public int ID { get; set; }
+        public string OS { get; set; }
+        public string Location { get; set; }
+        public string Company { get; set; }
+        
+        
+
+
+        public virtual  List<ComputerGame>Games{ get; set; }
+
+
+
+    }
+
+    public class SpecificationData : DbContext
+    {
+
+        public SpecificationData() : base ("Game specifications") { }
+
+        public DbSet<ComputerGame> Games { get; set; }
+        public DbSet<Specification> specifications { get; set; } 
+
+    }
